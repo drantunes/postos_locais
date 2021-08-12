@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:postos_locais/pages/postos_page.dart';
 import 'package:postos_locais/repositories/postos_repository.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterConfig.loadEnvVariables();
+
   runApp(
     ChangeNotifierProvider<PostosRepository>(
       create: (_) => PostosRepository(),
