@@ -14,11 +14,11 @@ class PostosPage extends StatelessWidget {
         child: Builder(builder: (context) {
           final local = context.watch<PostosController>();
 
-          return Center(
-            child: Text(
-              'Latitude: ${local.lat} | Longitude: ${local.long}',
-            ),
-          );
+          String mensagem = local.erro == ''
+              ? 'Latitude: ${local.lat} | Longitude: ${local.long}'
+              : local.erro;
+
+          return Center(child: Text(mensagem));
         }),
       ),
     );
