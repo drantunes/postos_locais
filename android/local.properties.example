@@ -1,0 +1,11 @@
+sdk.dir=/path/to/your/Android/sdk
+flutter.sdk=/path/to/your/flutter
+
+# Google Maps API Key
+# Para obter sua chave:
+# 1. Acesse https://console.cloud.google.com/
+# 2. Crie ou selecione um projeto
+# 3. Ative a API do Google Maps
+# 4. Crie credenciais (API Key)
+# 5. Copie a chave e cole abaixo
+GOOGLE_MAPS_API_KEY=YOUR_API_KEY_HERE

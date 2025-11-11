@@ -9,7 +9,7 @@ class PostosController extends ChangeNotifier {
   double lat = 0.0;
   double long = 0.0;
   String erro = '';
-  Set<Marker> markers = Set<Marker>();
+  Set<Marker> markers = <Marker>{};
   late GoogleMapController _mapsController;
 
   // PostosController() {
@@ -17,32 +17,47 @@ class PostosController extends ChangeNotifier {
   // }
   get mapsController => _mapsController;
 
+  limparErro() {
+    erro = '';
+    notifyListeners();
+  }
+
   onMapCreated(GoogleMapController gmc) async {
     _mapsController = gmc;
     getPosicao();
     loadPostos();
   }
 
-  loadPostos() {
+  loadPostos() async {
     final postos = PostosRepository().postos;
-    postos.forEach((posto) async {
+
+    BitmapDescriptor customIcon;
+    try {
+      customIcon = await BitmapDescriptor.asset(
+        const ImageConfiguration(size: Size(48, 48)),
+        'images/posto.png',
+      );
+    } catch (e) {
+      // Fallback para o ícone padrão se houver erro ao carregar a imagem
+      customIcon = BitmapDescriptor.defaultMarker;
+      print('Erro ao carregar ícone customizado: $e');
+    }
+
+    for (var posto in postos) {
       markers.add(
         Marker(
           markerId: MarkerId(posto.nome),
           position: LatLng(posto.latitude, posto.longitude),
-          icon: await BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(),
-            'images/posto.png',
-          ),
+          icon: customIcon,
           onTap: () => {
             showModalBottomSheet(
               context: appKey.currentState!.context,
               builder: (context) => PostoDetalhes(posto: posto),
-            )
+            ),
           },
         ),
       );
-    });
+    }
     notifyListeners();
   }
 
@@ -51,9 +66,18 @@ class PostosController extends ChangeNotifier {
       Position posicao = await _posicaoAtual();
       lat = posicao.latitude;
       long = posicao.longitude;
-      _mapsController.animateCamera(CameraUpdate.newLatLng(LatLng(lat, long)));
+      _mapsController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: LatLng(lat, long), zoom: 18),
+        ),
+      );
     } catch (e) {
       erro = e.toString();
+      // Se houver erro (ex: simulador sem localização configurada),
+      // usa localização padrão (São Paulo)
+      lat = -23.5505;
+      long = -46.6333;
+      print('Erro ao obter localização: $e. Usando localização padrão.');
     }
     notifyListeners();
   }
@@ -78,6 +102,9 @@ class PostosController extends ChangeNotifier {
       return Future.error('Você precisa autorizar o acesso à localização');
     }
 
-    return await Geolocator.getCurrentPosition();
+    // Adiciona timeout de 10 segundos para não ficar travado no simulador
+    return await Geolocator.getCurrentPosition(
+      timeLimit: const Duration(seconds: 10),
+    );
   }
 }

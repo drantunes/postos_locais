@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_config/flutter_config.dart';
 import 'package:postos_locais/pages/postos_page.dart';
 import 'package:postos_locais/repositories/postos_repository.dart';
 import 'package:provider/provider.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await FlutterConfig.loadEnvVariables();
-
+void main() {
   runApp(
-    ChangeNotifierProvider<PostosRepository>(
+    Provider<PostosRepository>(
       create: (_) => PostosRepository(),
       child: App(),
     ),
@@ -17,14 +13,14 @@ void main() async {
 }
 
 class App extends StatelessWidget {
+  const App({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Postos Locais',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.amber,
-      ),
+      theme: ThemeData(primarySwatch: Colors.amber),
       home: PostosPage(),
     );
   }
