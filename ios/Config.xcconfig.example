@@ -1,0 +1,6 @@
+// Configuração local do iOS - ARQUIVO DE EXEMPLO
+// 1. Copie este arquivo para Config.xcconfig (sem .example)
+// 2. Substitua YOUR_API_KEY_HERE pela sua chave real do Google Maps
+// 3. O arquivo Config.xcconfig já está no .gitignore e não será commitado
+
+GOOGLE_MAPS_API_KEY = YOUR_API_KEY_HERE
